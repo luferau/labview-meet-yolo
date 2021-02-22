@@ -1,11 +1,11 @@
 // server_test_console.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 #include <json/json.h>
-
-#include "include/crow.h"
 #include <iostream>
-
 #include <opencv2/opencv.hpp>            // C++
+
+#include "../base64/base64.h"
+#include "include/crow.h"
 
 int main()
 {
@@ -23,24 +23,24 @@ int main()
             return x;
         });
 
-    CROW_ROUTE(app, "/detect")
+    CROW_ROUTE(app, "/detect").methods(crow::HTTPMethod::Post)
         ([](const crow::request& req, crow::response& res) {
+
 
         std::string body = req.body;
 
+        // base64 to cv::Mat
+        std::string dec_jpg = base64_decode(body);
+        std::vector<uchar> data(dec_jpg.begin(), dec_jpg.end());
+        cv::Mat image_mat = cv::imdecode(cv::Mat(data), 1);
+        std::cout << "Height: " << image_mat.rows << " Width: " << image_mat.cols << "\n";
+        cv::imwrite("received.jpg", image_mat);
 
+        std::ostringstream os;
+        os << "done";
 
-        std::vector<char> image_vector(body.begin(), body.end());
-        cv::Mat image_mat(image_vector, true);
-        cv::Mat image(cv::imdecode(image_mat, 1));
-
-        std::cout << "Height: " << image.rows << " Width: " << image.cols << "\n";
-
-        cv::imwrite("received.jpg", image);
-
-        //replace cat.jpg with your file path
-        //res.set_static_file_info("cat.jpg");
-        //res.end();
+        res.write(os.str());
+        res.end();
         });
 
     app.port(18080).multithreaded().run();

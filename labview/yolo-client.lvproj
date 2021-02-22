@@ -1,6 +1,7 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
 <Project Type="Project" LVVersion="17008000">
 	<Item Name="My Computer" Type="My Computer">
+		<Property Name="NI.SortType" Type="Int">3</Property>
 		<Property Name="server.app.propertiesEnabled" Type="Bool">true</Property>
 		<Property Name="server.control.propertiesEnabled" Type="Bool">true</Property>
 		<Property Name="server.tcp.enabled" Type="Bool">false</Property>
@@ -16,8 +17,9 @@
 				<Item Name="Base64 Fast Encode.vi" Type="VI" URL="../support/base64/Base64 Fast Encode.vi"/>
 			</Item>
 		</Item>
-		<Item Name="yolo-detect.vi" Type="VI" URL="../yolo-detect.vi"/>
 		<Item Name="yolo-version.vi" Type="VI" URL="../yolo-version.vi"/>
+		<Item Name="yolo-detect.vi" Type="VI" URL="../yolo-detect.vi"/>
+		<Item Name="yolo-detect-image.vi" Type="VI" URL="../yolo-detect-image.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="vi.lib" Type="Folder">
 				<Item Name="BuildHelpPath.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/error.llb/BuildHelpPath.vi"/>

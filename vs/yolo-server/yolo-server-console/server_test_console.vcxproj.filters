@@ -18,6 +18,9 @@
     <ClInclude Include="include\crow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\base64\base64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="C:\opencv\build\install\x64\vc16\lib\opencv_world410.lib">
@@ -26,6 +29,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="yolo-server-console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base64\base64.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
