@@ -15,15 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\crow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\base64\base64.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <Library Include="C:\opencv\build\install\x64\vc16\lib\opencv_world410.lib">
+      <Filter>Resource Files</Filter>
+    </Library>
+    <Library Include="..\libs\yolo_cpp_dll.lib">
       <Filter>Resource Files</Filter>
     </Library>
   </ItemGroup>
@@ -31,8 +26,19 @@
     <ClCompile Include="yolo-server-console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\base64\base64.cpp">
+    <ClCompile Include="..\include\base64\base64.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\crow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\base64\base64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\yolo_v2_class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

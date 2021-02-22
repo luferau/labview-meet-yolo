@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\opencv\build\install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>e:\UPWORK\darknet\darknet\src;C:\opencv\build\install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,15 +149,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\base64\base64.cpp" />
+    <ClCompile Include="..\include\base64\base64.cpp" />
     <ClCompile Include="yolo-server-console.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\base64\base64.h" />
-    <ClInclude Include="include\crow.h" />
+    <Library Include="..\libs\yolo_cpp_dll.lib" />
+    <Library Include="C:\opencv\build\install\x64\vc16\lib\opencv_world410.lib" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="C:\opencv\build\install\x64\vc16\lib\opencv_world410.lib" />
+    <ClInclude Include="..\include\base64\base64.h" />
+    <ClInclude Include="..\include\crow.h" />
+    <ClInclude Include="..\include\yolo_v2_class.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
