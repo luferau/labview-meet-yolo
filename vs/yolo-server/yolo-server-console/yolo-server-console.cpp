@@ -9,14 +9,16 @@
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    std::cout << "yolo-server-console running...\n";
 
     crow::SimpleApp app;
 
-    CROW_ROUTE(app, "/hello")
+    CROW_ROUTE(app, "/version")
         ([]{
+            std::string response = "opencv:" + cv::getVersionString();
+
             crow::json::wvalue x;
-            x["message"] = "Hello World!";
+            x["message"] = response;
             
             return x;
         });
@@ -25,6 +27,8 @@ int main()
         ([](const crow::request& req, crow::response& res) {
 
         std::string body = req.body;
+
+
 
         std::vector<char> image_vector(body.begin(), body.end());
         cv::Mat image_mat(image_vector, true);

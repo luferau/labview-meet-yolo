@@ -24,6 +24,7 @@
     <ProjectGuid>{38f9e684-93f9-4ba7-ba81-93d195937335}</ProjectGuid>
     <RootNamespace>servertestconsole</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>yolo-server-console</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -148,7 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="server_test_console.cpp" />
+    <ClCompile Include="yolo-server-console.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\crow.h" />
