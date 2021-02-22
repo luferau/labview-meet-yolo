@@ -17,7 +17,7 @@ std::vector<std::string> objects_names_from_file(std::string const filename) {
     return file_lines;
 }
 
-std::string show_console_result(std::vector<bbox_t> const result_vec, std::vector<std::string> const obj_names, int frame_id = -1) {
+std::string show_result(std::vector<bbox_t> const result_vec, std::vector<std::string> const obj_names, int frame_id = -1) {
     std::ostringstream os;
     if (frame_id >= 0) os << " Frame: " << frame_id << std::endl;
     for (auto& i : result_vec) {
@@ -33,75 +33,98 @@ int main()
 {
     std::cout << "yolo-server-console running...\n";
 
+    // crow server
     crow::SimpleApp app;
-    //static std::shared_ptr<Detector> detector;
-    //static std::vector<std::string> obj_names;
+    
+    // yolo detector
+    static std::shared_ptr<Detector> detector;
+    static std::vector<std::string> obj_names;
 
+    // endpoints
     CROW_ROUTE(app, "/version")
         ([&]{
+            std::string response = "opencv:" + cv::getVersionString();
 
-        std::string response = "opencv:" + cv::getVersionString();
-
-        crow::json::wvalue x;
-        x["message"] = response;
-        return x;
+            crow::json::wvalue x;
+            x["version"] = response;
+            return x;
         });
 
     CROW_ROUTE(app, "/init")
         ([&] {
+            std::string  names_file = "e:\\UPWORK\\darknet\\darknet\\build\\darknet\\x64\\data\\coco.names";
+            std::string  cfg_file = "e:\\UPWORK\\darknet\\darknet\\build\\darknet\\x64\\cfg\\yolov4.cfg";
+            std::string  weights_file = "e:\\UPWORK\\darknet\\darknet\\build\\darknet\\x64\\yolov4.weights";
 
-        std::string  names_file = "e:\\UPWORK\\darknet\\darknet\\build\\darknet\\x64\\data\\coco.names";
-        std::string  cfg_file = "e:\\UPWORK\\darknet\\darknet\\build\\darknet\\x64\\cfg\\yolov4.cfg";
-        std::string  weights_file = "e:\\UPWORK\\darknet\\darknet\\build\\darknet\\x64\\yolov4.weights";
+            // response
+            std::ostringstream response_stream;
+        
+            try 
+            {
+                detector = std::make_shared<Detector>(cfg_file, weights_file);
+                obj_names = objects_names_from_file(names_file);
 
-        //detector = std::make_shared<Detector>(cfg_file, weights_file);
+                response_stream << "ok";
+            }
+            catch (std::exception& e) { response_stream << "exception: " << e.what(); }
+            catch (...) { response_stream << "unknown exception"; }
 
-        //obj_names = objects_names_from_file(names_file);
+            crow::json::wvalue response;
+            response["result"] = response_stream.str();
 
-        crow::json::wvalue x;
-        x["message"] = "OK";
+            return response;
+        });
 
-        return x;
+    CROW_ROUTE(app, "/dispose")
+        ([&] {
+            // response
+            std::ostringstream response_stream;
+            try
+            {
+                detector->~Detector();
+
+                response_stream << "ok";
+            }
+            catch (std::exception& e) { response_stream << "exception: " << e.what(); }
+            catch (...) { response_stream << "unknown exception"; }
+
+            crow::json::wvalue response;
+            response["result"] = response_stream.str();
+
+            return response;
         });
 
     CROW_ROUTE(app, "/detect").methods(crow::HTTPMethod::Post)
-        ([&](const crow::request& req, crow::response& res) {
+        ([&](const crow::request& req) {
+            // response
+            std::ostringstream response_stream;
+            std::string result = "";
+            try
+            {
+                std::string body = req.body;
 
-        std::string body = req.body;
+                // base64 to cv::Mat
+                std::string dec_jpg = base64_decode(body, true);
+                std::vector<uchar> data(dec_jpg.begin(), dec_jpg.end());
+                cv::Mat image_mat = cv::imdecode(cv::Mat(data), 1);
 
-        // base64 to cv::Mat
-        std::string dec_jpg = base64_decode(body, true);
-        std::vector<uchar> data(dec_jpg.begin(), dec_jpg.end());
-        cv::Mat image_mat = cv::imdecode(cv::Mat(data), 1);
+                std::cout << "Image in processing: " << "Height: " << image_mat.rows << " Width: " << image_mat.cols << " Channels count: " << image_mat.channels() << "\n";
+                // cv::imwrite("received.png", image_mat);
 
-        std::cout << "Image in processing: " << "Height: " << image_mat.rows << " Width: " << image_mat.cols << " Channels count: " << image_mat.channels() << "\n";
-        cv::imwrite("received.png", image_mat);
+                // detecting 
+                std::vector<bbox_t> result_vec = detector->detect(image_mat);
+                result = show_result(result_vec, obj_names);
 
-        // detecting 
+                response_stream << "ok";
+            }
+            catch (std::exception& e) { response_stream << "exception: " << e.what(); }
+            catch (...) { response_stream << "unknown exception"; }
 
-        /*
-        image_t img;
-        img.c = image_mat.channels();
-        img.data = (float*)image_mat.data;
-        img.h = image_mat.rows;
-        img.w = image_mat.cols;
-        */
+            crow::json::wvalue response;
+            response["result"] = response_stream.str();
+            response["objects"] = result;
 
-        std::string  names_file = "e:\\UPWORK\\darknet\\darknet\\build\\darknet\\x64\\data\\coco.names";
-        std::string  cfg_file = "e:\\UPWORK\\darknet\\darknet\\build\\darknet\\x64\\cfg\\yolov4.cfg";
-        std::string  weights_file = "e:\\UPWORK\\darknet\\darknet\\build\\darknet\\x64\\yolov4.weights";
-
-        Detector detector(cfg_file, weights_file);
-
-        auto obj_names = objects_names_from_file(names_file);
-
-        std::vector<bbox_t> result_vec = detector.detect(image_mat);
-        //detector.free_image(image_mat);
-
-        auto result = show_console_result(result_vec, obj_names);
-
-        res.write(result);
-        res.end();
+            return response;
         });
 
     // app.port(18080).multithreaded().run();
