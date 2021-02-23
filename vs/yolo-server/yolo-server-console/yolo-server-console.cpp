@@ -1,12 +1,11 @@
 // server_test_console.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-#include <json/json.h>
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
-#include "../include/base64/base64.h"
-#include "../include/crow.h"
 #include "../include/yolo_v2_class.hpp"
+#include "../include/base64/base64.cpp"
+#include "../include/crow.h"
 
 std::vector<std::string> objects_names_from_file(std::string const filename) {
     std::ifstream file(filename);
@@ -51,10 +50,10 @@ int main()
         });
 
     CROW_ROUTE(app, "/init")
-        ([&] {
-            std::string  names_file = "e:\\UPWORK\\darknet\\darknet\\build\\darknet\\x64\\data\\coco.names";
-            std::string  cfg_file = "e:\\UPWORK\\darknet\\darknet\\build\\darknet\\x64\\cfg\\yolov4.cfg";
-            std::string  weights_file = "e:\\UPWORK\\darknet\\darknet\\build\\darknet\\x64\\yolov4.weights";
+        ([&] (const crow::request& req) {
+            std::string  names_file = req.url_params.get("names");
+            std::string  cfg_file = req.url_params.get("cfg");
+            std::string  weights_file = req.url_params.get("weights");;
 
             // response
             std::ostringstream response_stream;
@@ -79,6 +78,7 @@ int main()
         ([&] {
             // response
             std::ostringstream response_stream;
+
             try
             {
                 detector->~Detector();
@@ -99,16 +99,19 @@ int main()
             // response
             std::ostringstream response_stream;
             std::string result = "";
+
             try
             {
                 std::string body = req.body;
 
                 // base64 to cv::Mat
-                std::string dec_jpg = base64_decode(body, true);
-                std::vector<uchar> data(dec_jpg.begin(), dec_jpg.end());
-                cv::Mat image_mat = cv::imdecode(cv::Mat(data), 1);
+                std::string image_decoded = base64_decode(body, true);
+                std::vector<uchar> image_data(image_decoded.begin(), image_decoded.end());
+                cv::Mat image_mat = cv::imdecode(cv::Mat(image_data), 1);
 
                 std::cout << "Image in processing: " << "Height: " << image_mat.rows << " Width: " << image_mat.cols << " Channels count: " << image_mat.channels() << "\n";
+
+                // save to file
                 // cv::imwrite("received.png", image_mat);
 
                 // detecting 

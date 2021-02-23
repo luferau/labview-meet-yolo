@@ -20,8 +20,6 @@
 		<Item Name="yolo-version.vi" Type="VI" URL="../yolo-version.vi"/>
 		<Item Name="yolo-init.vi" Type="VI" URL="../yolo-init.vi"/>
 		<Item Name="yolo-detect.vi" Type="VI" URL="../yolo-detect.vi"/>
-		<Item Name="yolo-detect-image.vi" Type="VI" URL="../yolo-detect-image.vi"/>
-		<Item Name="yolo-read-png.vi" Type="VI" URL="../yolo-read-png.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="vi.lib" Type="Folder">
 				<Item Name="BuildHelpPath.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/error.llb/BuildHelpPath.vi"/>
